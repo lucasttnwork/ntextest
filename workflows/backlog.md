@@ -107,6 +107,7 @@
 ### **Infraestrutura**
 - [ ] **Deploy do sistema** - Ambiente de produção
 - [x] **Monitoramento** - Logs e métricas ✅
+- [x] **Configuração de variáveis de ambiente (.env)** - Arquivo `.env` criado na raiz com chaves de OpenAI, Tavily, Supabase e integrações; `.gitignore` já ignora `.env` ✅
 - [ ] **Backup e segurança** - Proteção de dados
 - [ ] **Escalabilidade** - Arquitetura para crescimento
 - [x] **Documentação técnica** - Manuais de operação ✅

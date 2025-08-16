@@ -620,6 +620,23 @@ class DesignAgent:
             "recent_designs": len(self.design_history[-10:]) if self.design_history else 0,
             "last_updated": datetime.now().isoformat()
         }
+
+    def get_agent_status(self) -> Dict[str, Any]:
+        """Retorna status resumido do agente"""
+        return {
+            "name": self.name,
+            "status": self.status,
+            "capabilities": self.capabilities
+        }
+
+
+_design_agent_instance: Optional[DesignAgent] = None
+
+def get_design_agent() -> DesignAgent:
+    global _design_agent_instance
+    if _design_agent_instance is None:
+        _design_agent_instance = DesignAgent()
+    return _design_agent_instance
     
     def optimize_design(self, design_id: str, feedback: str) -> Dict[str, Any]:
         """Otimiza design baseado em feedback"""

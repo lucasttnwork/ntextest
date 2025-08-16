@@ -622,6 +622,23 @@ class CopyAgent:
             "recent_content": len(self.content_history[-10:]) if self.content_history else 0,
             "last_updated": datetime.now().isoformat()
         }
+
+    def get_agent_status(self) -> Dict[str, Any]:
+        """Retorna status resumido do agente"""
+        return {
+            "name": self.name,
+            "status": self.status,
+            "capabilities": self.capabilities
+        }
+
+
+_copy_agent_instance: Optional[CopyAgent] = None
+
+def get_copy_agent() -> CopyAgent:
+    global _copy_agent_instance
+    if _copy_agent_instance is None:
+        _copy_agent_instance = CopyAgent()
+    return _copy_agent_instance
     
     def optimize_content(self, content_id: str, feedback: str) -> Dict[str, Any]:
         """Otimiza conteúdo baseado em feedback"""

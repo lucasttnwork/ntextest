@@ -14,12 +14,22 @@ from dotenv import load_dotenv
 # Carregar variáveis de ambiente
 load_dotenv()
 
-# Importar framework Agno
+# Importar framework Agno (suportando variações de API entre versões)
 try:
     from agno.agent import Agent
     from agno.agent.team import AgentTeam
     from agno.models.anthropic import Claude
-    from agno.models.openai import OpenAI
+    # Algumas versões expõem OpenAI em agno.models.openai, outras em submódulos
+    try:
+        from agno.models.openai import OpenAI
+    except Exception:
+        try:
+            from agno.models.openai.chat import OpenAIChat as OpenAI  # type: ignore
+        except Exception:
+            from agno.models import openai as _agno_openai  # type: ignore
+            OpenAI = getattr(_agno_openai, "OpenAI", None)  # type: ignore
+            if OpenAI is None:
+                raise
     from agno.tools.reasoning import ReasoningTools
     from agno.tools.storage import StorageTools
     from agno.tools.memory import MemoryTools
@@ -67,12 +77,32 @@ class NTEXMasterAgent:
         """Inicializa arquitetura usando framework Agno"""
         try:
             # Configurar modelo OpenAI
-            self.model = OpenAI(
-                id="gpt-4",
-                api_key=self.api_key,
-                temperature=0.7,
-                max_tokens=2000
-            )
+            model_id = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+            try:
+                # Tentativa 1: assinatura com id=
+                self.model = OpenAI(
+                    id=model_id,
+                    api_key=self.api_key,
+                    temperature=0.7,
+                    max_tokens=2000,
+                )
+            except Exception:
+                try:
+                    # Tentativa 2: assinatura com model=
+                    self.model = OpenAI(
+                        model=model_id,
+                        api_key=self.api_key,
+                        temperature=0.7,
+                        max_tokens=2000,
+                    )
+                except Exception:
+                    # Tentativa 3: assinatura posicional
+                    self.model = OpenAI(
+                        model_id,
+                        api_key=self.api_key,
+                        temperature=0.7,
+                        max_tokens=2000,
+                    )
             
             # Configurar ferramentas de raciocínio
             self.reasoning_tools = ReasoningTools(add_instructions=True)
@@ -204,9 +234,42 @@ class NTEXMasterAgent:
     def _process_fallback(self, message: str, context: Dict = None) -> Dict[str, Any]:
         """Processa mensagem usando implementação fallback"""
         try:
+            # Se OpenAI estiver disponível, gerar resposta dinâmica mesmo em modo fallback
+            api_key = os.getenv("OPENAI_API_KEY")
+            if api_key:
+                try:
+                    from openai import OpenAI as _OpenAIClient  # type: ignore
+                    model_id = os.getenv("OPENAI_FALLBACK_MODEL", "gpt-4")
+                    client = _OpenAIClient(api_key=api_key)
+                    prompt = f"""
+Você é o Master Agent da NTEX. Responda de forma útil, objetiva e acionável.
+Mensagem do usuário: {message}
+Contexto: {json.dumps(context, ensure_ascii=False) if context else 'sem contexto'}
+Instruções:
+- Se a mensagem pedir estratégia/campanha, retorne um plano com 3-5 passos práticos e KPIs.
+- Se for saudação/pedido genérico, proponha próximos passos úteis (ex.: criar campanha, post, análise).
+- Seja curto e direto.
+"""
+                    completion = client.chat.completions.create(
+                        model=model_id,
+                        messages=[{"role": "user", "content": prompt}],
+                        max_tokens=400,
+                        temperature=0.7,
+                    )
+                    content = completion.choices[0].message.content
+                    return {
+                        "content": content,
+                        "agent": self.name,
+                        "capabilities": self.capabilities,
+                        "timestamp": datetime.now().isoformat(),
+                        "fallback_mode": True
+                    }
+                except Exception as _:
+                    # Se algo falhar, usa respostas pré-definidas abaixo
+                    pass
+
             message_lower = message.lower()
-            
-            # Análise de intenção básica
+            # Respostas pré-definidas
             if any(word in message_lower for word in ['campanha', 'estratégia', 'plano']):
                 return self._handle_campaign_strategy_fallback(message, context)
             elif any(word in message_lower for word in ['coordenar', 'gerenciar', 'supervisionar']):
@@ -513,3 +576,23 @@ class NTEXMasterAgent:
             "system_health": "healthy" if AGNO_AVAILABLE else "basic",
             "last_updated": datetime.now().isoformat()
         }
+
+    def get_system_status(self) -> Dict[str, Any]:
+        """Retorna status resumido esperado por inicialização"""
+        return {
+            "master_agent": {
+                "name": self.name,
+                "status": self.status,
+                "agno_available": AGNO_AVAILABLE
+            }
+        }
+
+
+# Singleton simples + fábrica para compatibilidade com start_system/chat_interface
+_master_agent_instance: Optional[NTEXMasterAgent] = None
+
+def get_master_agent() -> NTEXMasterAgent:
+    global _master_agent_instance
+    if _master_agent_instance is None:
+        _master_agent_instance = NTEXMasterAgent()
+    return _master_agent_instance

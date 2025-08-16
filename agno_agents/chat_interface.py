@@ -398,48 +398,22 @@ def process_with_copy_agent(chat_session: ChatSession, message: str) -> str:
     try:
         chat_session.add_agent_log(
             "Copy_Agent",
-            "Iniciando criação de copy",
+            "Roteando mensagem para CopyAgent real",
             log_type="execution"
         )
-        
-        # Simular processo de criação de copy
-        chat_session.add_agent_log(
-            "Copy_Agent",
-            "Analisando objetivo e público-alvo",
-            log_type="execution",
-            step_number=1
-        )
-        
-        chat_session.add_agent_log(
-            "Copy_Agent",
-            "Aplicando técnicas de copywriting para B2B",
-            log_type="execution",
-            step_number=2
-        )
-        
-        # Gerar resposta
-        response = """✅ **Copy para Instagram criado com sucesso!**
 
-📝 **Copy:**
-"Transforme seu marketing em uma máquina de vendas! 🚀
+        context = chat_session.get_context()
+        result = copy_agent.process_message(message, context={"session_context": context})
 
-A automação não é só sobre tecnologia - é sobre liberar seu tempo para o que realmente importa: estratégia e criatividade.
-
-💡 Dica: Comece pequeno. Automatize uma tarefa por vez e veja a diferença.
-
-#MarketingDigital #Automação #Eficiência #Vendas"
-
-🎯 **Público-alvo:** Empreendedores B2B interessados em automação
-📊 **Objetivo:** Gerar engajamento e leads qualificados
-✨ **Tom de voz:** Profissional, mas acessível e motivador"""
+        content = result.get("content") if isinstance(result, dict) else str(result)
 
         chat_session.add_agent_log(
             "Copy_Agent",
-            "Copy gerado com sucesso",
+            "Copy gerado",
             log_type="result"
         )
-        
-        return response
+
+        return content
         
     except Exception as e:
         logger.error(f"Erro no agente de copy: {e}")
@@ -450,53 +424,22 @@ def process_with_design_agent(chat_session: ChatSession, message: str) -> str:
     try:
         chat_session.add_agent_log(
             "Design_Agent",
-            "Iniciando criação de design",
+            "Roteando mensagem para DesignAgent real",
             log_type="execution"
         )
-        
-        # Simular processo de criação de design
-        chat_session.add_agent_log(
-            "Design_Agent",
-            "Analisando brief e requisitos visuais",
-            log_type="execution",
-            step_number=1
-        )
-        
-        chat_session.add_agent_log(
-            "Design_Agent",
-            "Criando layout com princípios de design para redes sociais",
-            log_type="execution",
-            step_number=2
-        )
-        
-        # Gerar resposta
-        response = """🎨 **Design visual criado com sucesso!**
 
-✨ **Características do design:**
-• **Paleta de cores:** Gradiente azul-verde (#19c37d → #0ea5e9)
-• **Tipografia:** Fonte moderna e legível
-• **Layout:** Clean e minimalista
-• **Elementos:** Ícones simples e ícones de ação
-• **Formato:** Otimizado para Instagram (1080x1080px)
+        context = chat_session.get_context()
+        result = design_agent.process_message(message, context={"session_context": context})
 
-🎯 **Aplicações:**
-• Post principal do Instagram
-• Story destacado
-• Avatar de perfil
-• Template para futuros posts
-
-📁 **Arquivos gerados:**
-• post_instagram_design.png (1080x1080px)
-• post_instagram_design_story.png (1080x1920px)
-• post_instagram_design_avatar.png (400x400px)"""
+        content = result.get("content") if isinstance(result, dict) else str(result)
 
         chat_session.add_agent_log(
             "Design_Agent",
-            "Design criado com sucesso",
+            "Design gerado",
             log_type="result"
         )
-        
-        return response
+
+        return content
         
     except Exception as e:
         logger.error(f"Erro no agente de design: {e}")
@@ -507,37 +450,22 @@ def process_with_master_agent_logic(chat_session: ChatSession, message: str) -> 
     try:
         chat_session.add_agent_log(
             "NTEX_Master_Agent",
-            "Processando solicitação geral",
+            "Roteando mensagem para MasterAgent real",
             log_type="execution"
         )
-        
-        # Gerar resposta baseada no contexto
-        response = """🤖 **Agente Mestre NTEX ativo!**
 
-Entendi sua solicitação. Como posso ajudá-lo especificamente?
+        context = chat_session.get_context()
+        result = master_agent.process_message(message, context={"session_context": context})
 
-**Opções disponíveis:**
-📱 **Criar post Instagram** - Copy + design para redes sociais
-📢 **Criar anúncio** - Copy persuasivo para campanhas
-🎨 **Criar design** - Elementos visuais e templates
-🚀 **Criar campanha** - Estratégia completa de marketing
-📊 **Analisar performance** - Métricas e otimizações
-
-**Exemplos de comandos:**
-• "Criar post para Instagram sobre automação de marketing"
-• "Criar anúncio para Google Ads focado em CEOs"
-• "Criar design para story do Instagram"
-• "Criar campanha completa para LinkedIn"
-
-Digite sua solicitação específica e eu direcionarei para o agente especializado mais adequado! 🎯"""
+        content = result.get("content") if isinstance(result, dict) else str(result)
 
         chat_session.add_agent_log(
             "NTEX_Master_Agent",
-            "Resposta geral gerada com sucesso",
+            "Resposta gerada",
             log_type="result"
         )
-        
-        return response
+
+        return content
         
     except Exception as e:
         logger.error(f"Erro na lógica do agente mestre: {e}")
