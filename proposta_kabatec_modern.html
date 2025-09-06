@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NTEX → Kabatec | Piloto Academias</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'slide-up': 'slideUp 0.8s ease-out',
+                        'fade-in': 'fadeIn 1s ease-out',
+                        'scale-in': 'scaleIn 0.6s ease-out',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(100px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        scaleIn: {
+                            '0%': { transform: 'scale(0.8)', opacity: '0' },
+                            '100%': { transform: 'scale(1)', opacity: '1' },
+                        },
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .slide {
+            min-height: 100vh;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
+        }
+        
+        .slide.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+        
+        .shape {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        .shape:nth-child(1) { animation-delay: 0s; }
+        .shape:nth-child(2) { animation-delay: 2s; }
+        .shape:nth-child(3) { animation-delay: 4s; }
+        .shape:nth-child(4) { animation-delay: 6s; }
+        
+        .metric-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .metric-card:hover::before {
+            left: 100%;
+        }
+        
+        .navigation-dot {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .navigation-dot:hover {
+            transform: scale(1.3);
+        }
+        
+        .navigation-dot.active {
+            background: #667eea;
+            transform: scale(1.5);
+        }
+    </style>
+</head>
+<body class="font-inter bg-gray-50">
+    <!-- Three.js Background -->
+    <div id="three-container" class="fixed inset-0 z-0"></div>
+    
+    <!-- Navigation -->
+    <div class="fixed right-8 top-1/2 transform -translate-y-1/2 z-50 space-y-3">
+        <div class="navigation-dot w-3 h-3 bg-gray-300 rounded-full active" onclick="goToSlide(0)"></div>
+        <div class="navigation-dot w-3 h-3 bg-gray-300 rounded-full" onclick="goToSlide(1)"></div>
+        <div class="navigation-dot w-3 h-3 bg-gray-300 rounded-full" onclick="goToSlide(2)"></div>
+        <div class="navigation-dot w-3 h-3 bg-gray-300 rounded-full" onclick="goToSlide(3)"></div>
+        <div class="navigation-dot w-3 h-3 bg-gray-300 rounded-full" onclick="goToSlide(4)"></div>
+        <div class="navigation-dot w-3 h-3 bg-gray-300 rounded-full" onclick="goToSlide(5)"></div>
+        <div class="navigation-dot w-3 h-3 bg-gray-300 rounded-full" onclick="goToSlide(6)"></div>
+        <div class="navigation-dot w-3 h-3 bg-gray-300 rounded-full" onclick="goToSlide(7)"></div>
+    </div>
+
+    <!-- Slide 1: Capa -->
+    <div class="slide active relative z-10 flex items-center justify-center min-h-screen gradient-bg text-white">
+        <div class="floating-shapes">
+            <div class="shape w-20 h-20 bg-white rounded-full absolute top-20 left-20"></div>
+            <div class="shape w-16 h-16 bg-white rounded-lg absolute top-40 right-32"></div>
+            <div class="shape w-24 h-24 bg-white rounded-full absolute bottom-32 left-1/4"></div>
+            <div class="shape w-12 h-12 bg-white rounded-lg absolute bottom-20 right-20"></div>
+        </div>
+        <div class="text-center max-w-4xl mx-auto px-8">
+            <h1 class="text-6xl md:text-8xl font-black mb-6 animate-slide-up">
+                NTEX → Kabatec
+            </h1>
+            <h2 class="text-3xl md:text-5xl font-bold mb-8 animate-slide-up" style="animation-delay: 0.2s">
+                Piloto Academias
+            </h2>
+            <div class="inline-block bg-white text-purple-600 px-8 py-4 rounded-full text-2xl font-bold mb-8 animate-scale-in" style="animation-delay: 0.4s">
+                R$ 3.000/mês
+            </div>
+            <p class="text-xl md:text-2xl opacity-90 animate-slide-up" style="animation-delay: 0.6s">
+                90 dias para gerar demanda qualificada e orquestrar CRM com IA
+            </p>
+        </div>
+    </div>
+
+    <!-- Slide 2: Objetivo -->
+    <div class="slide relative z-10 min-h-screen bg-white py-20">
+        <div class="max-w-7xl mx-auto px-8">
+            <h2 class="text-5xl font-bold text-center mb-16 text-gray-800">
+                Objetivo do Piloto
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="card-hover bg-white p-8 rounded-2xl shadow-lg border-l-4 border-blue-500">
+                    <div class="text-4xl mb-4">🎯</div>
+                    <h4 class="text-xl font-semibold mb-4 text-blue-600">Demanda Qualificada</h4>
+                    <ul class="space-y-2 text-gray-600">
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-2">✓</span>
+                            Gerar 30-60 leads/mês de academias
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-2">✓</span>
+                            Foco em decisores com poder de compra
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-2">✓</span>
+                            Qualificação automática por critérios
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="card-hover bg-white p-8 rounded-2xl shadow-lg border-l-4 border-purple-500">
+                    <div class="text-4xl mb-4">⚡</div>
+                    <h4 class="text-xl font-semibold mb-4 text-purple-600">CRM Inteligente</h4>
+                    <ul class="space-y-2 text-gray-600">
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-2">✓</span>
+                            Orquestrar follow-ups automáticos
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-2">✓</span>
+                            Reduzir perdas no funil de vendas
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-2">✓</span>
+                            Agendamento automático de visitas
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="card-hover bg-white p-8 rounded-2xl shadow-lg border-l-4 border-green-500">
+                    <div class="text-4xl mb-4">📊</div>
+                    <h4 class="text-xl font-semibold mb-4 text-green-600">Testes Rápidos</h4>
+                    <ul class="space-y-2 text-gray-600">
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-2">✓</span>
+                            Matriz de testes semanais
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-2">✓</span>
+                            BI próprio para decisões
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-2">✓</span>
+                            Otimização contínua por dados
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="card-hover bg-white p-8 rounded-2xl shadow-lg border-l-4 border-red-500">
+                    <div class="text-4xl mb-4">🤖</div>
+                    <h4 class="text-xl font-semibold mb-4 text-red-600">Agentes V0</h4>
+                    <ul class="space-y-2 text-gray-600">
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-2">✓</span>
+                            Arquitetura de agentes em português
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-2">✓</span>
+                            Criação gradual por prioridade 80/20
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-2">✓</span>
+                            Automação de tarefas repetitivas
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 3: Escopo -->
+    <div class="slide relative z-10 min-h-screen gradient-bg text-white py-20">
+        <div class="max-w-7xl mx-auto px-8">
+            <h2 class="text-5xl font-bold text-center mb-16">
+                O que Entregamos
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="glass-effect p-8 rounded-2xl card-hover">
+                    <div class="text-4xl mb-4">📱</div>
+                    <h4 class="text-xl font-semibold mb-4">Gestão de Mídia Paga</h4>
+                    <ul class="space-y-2">
+                        <li class="flex items-center">
+                            <span class="text-yellow-300 mr-2">✓</span>
+                            Meta (Feeds/Reels) + Google (Search/Maps)
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-yellow-300 mr-2">✓</span>
+                            Matriz de testes contínuos
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-yellow-300 mr-2">✓</span>
+                            Gatilhos: dor, prova, prazo, case
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-yellow-300 mr-2">✓</span>
+                            Ciclos curtos: 7-10 dias
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-yellow-300 mr-2">✓</span>
+                            Rastreamento completo
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="glass-effect p-8 rounded-2xl card-hover">
+                    <div class="text-4xl mb-4">📝</div>
+                    <h4 class="text-xl font-semibold mb-4">Conteúdo & Posicionamento</h4>
+                    <ul class="space-y-2">
+                        <li class="flex items-center">
+                            <span class="text-yellow-300 mr-2">✓</span>
+                            Scanner de mercado (D+7)
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-yellow-300 mr-2">✓</span>
+                            Mapa de mensagem estruturado
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-yellow-300 mr-2">✓</span>
+                            12 posts/mês (8 IG + 4 LinkedIn)
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-yellow-300 mr-2">✓</span>
+                            Ciclo de melhoria contínua
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="glass-effect p-8 rounded-2xl card-hover">
+                    <div class="text-4xl mb-4">🔄</div>
+                    <h4 class="text-xl font-semibold mb-4">CRM & Operação</h4>
+                    <ul class="space-y-2">
+                        <li class="flex items-center">
+                            <span class="text-yellow-300 mr-2">✓</span>
+                            Funil completo de vendas
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-yellow-300 mr-2">✓</span>
+                            Follow-ups automáticos
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-yellow-300 mr-2">✓</span>
+                            Formulário de qualificação
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-yellow-300 mr-2">✓</span>
+                            Playbook de atendimento
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="glass-effect p-8 rounded-2xl card-hover">
+                    <div class="text-4xl mb-4">📈</div>
+                    <h4 class="text-xl font-semibold mb-4">BI & Relatórios</h4>
+                    <ul class="space-y-2">
+                        <li class="flex items-center">
+                            <span class="text-yellow-300 mr-2">✓</span>
+                            Dashboard V0 personalizado
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-yellow-300 mr-2">✓</span>
+                            Relatório semanal (1 página)
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-yellow-300 mr-2">✓</span>
+                            Métricas: Leads, CPL, conversão
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-yellow-300 mr-2">✓</span>
+                            Forecast de vendas
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 4: Métricas -->
+    <div class="slide relative z-10 min-h-screen bg-white py-20">
+        <div class="max-w-7xl mx-auto px-8">
+            <h2 class="text-5xl font-bold text-center mb-16 text-gray-800">
+                Métricas Principais
+            </h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
+                <div class="metric-card text-white p-8 rounded-2xl text-center card-hover">
+                    <div class="text-5xl font-black mb-2">30-60</div>
+                    <div class="text-lg opacity-90">Leads/mês</div>
+                </div>
+                <div class="metric-card text-white p-8 rounded-2xl text-center card-hover">
+                    <div class="text-5xl font-black mb-2">40%</div>
+                    <div class="text-lg opacity-90">Qualificado→Visita</div>
+                </div>
+                <div class="metric-card text-white p-8 rounded-2xl text-center card-hover">
+                    <div class="text-5xl font-black mb-2">50%</div>
+                    <div class="text-lg opacity-90">Visita→Proposta</div>
+                </div>
+                <div class="metric-card text-white p-8 rounded-2xl text-center card-hover">
+                    <div class="text-5xl font-black mb-2">&lt;4h</div>
+                    <div class="text-lg opacity-90">Tempo resposta</div>
+                </div>
+            </div>
+            
+            <div class="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-8 rounded-2xl">
+                <h3 class="text-2xl font-bold mb-4">🎯 Métrica-Norte</h3>
+                <p class="text-xl">Número de visitas qualificadas com decisor de academia</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 5: Agentes -->
+    <div class="slide relative z-10 min-h-screen gradient-bg text-white py-20">
+        <div class="max-w-7xl mx-auto px-8">
+            <h2 class="text-5xl font-bold text-center mb-16">
+                Agentes de IA V0
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+                <div class="bg-white bg-opacity-10 p-6 rounded-2xl backdrop-blur-sm card-hover">
+                    <div class="text-3xl mb-4">👩‍💼</div>
+                    <div class="font-semibold text-lg mb-2">Secretária de Agendamentos</div>
+                    <p class="text-sm opacity-90">Captura leads, faz perguntas-chave e agenda visitas. Integra WhatsApp/CRM.</p>
+                </div>
+                
+                <div class="bg-white bg-opacity-10 p-6 rounded-2xl backdrop-blur-sm card-hover">
+                    <div class="text-3xl mb-4">🧹</div>
+                    <div class="font-semibold text-lg mb-2">Zelador do CRM</div>
+                    <p class="text-sm opacity-90">Mantém estágios atualizados, cria tarefas de follow-up e alerta inatividade.</p>
+                </div>
+                
+                <div class="bg-white bg-opacity-10 p-6 rounded-2xl backdrop-blur-sm card-hover">
+                    <div class="text-3xl mb-4">📊</div>
+                    <div class="font-semibold text-lg mb-2">Analista de Tráfego</div>
+                    <p class="text-sm opacity-90">Lê dados de anúncios em tempo real, sugere novos testes e redistribuição de verba.</p>
+                </div>
+                
+                <div class="bg-white bg-opacity-10 p-6 rounded-2xl backdrop-blur-sm card-hover">
+                    <div class="text-3xl mb-4">🤖</div>
+                    <div class="font-semibold text-lg mb-2">Alimentador de BI</div>
+                    <p class="text-sm opacity-90">Consolida dados (ads/CRM/LP) no dashboard e gera resumo semanal.</p>
+                </div>
+            </div>
+            
+            <div class="glass-effect p-8 rounded-2xl">
+                <h4 class="text-xl font-semibold mb-4">📈 Regra 80/20</h4>
+                <p>Após resultados do piloto, priorizamos novos agentes V1 apenas se provarem maior impacto: Orçamentista Digital, PMO de Obra, Fiscal de Documentos/ART.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 6: Roadmap -->
+    <div class="slide relative z-10 min-h-screen bg-white py-20">
+        <div class="max-w-7xl mx-auto px-8">
+            <h2 class="text-5xl font-bold text-center mb-16 text-gray-800">
+                Roadmap 90 Dias
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="bg-white p-6 rounded-2xl shadow-lg border-t-4 border-blue-500 card-hover">
+                    <h4 class="text-lg font-semibold mb-4 text-blue-600">Sprint 1 (Semanas 1-2)</h4>
+                    <ul class="space-y-2 text-gray-600">
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-2">✓</span>
+                            LP no ar + rastreamento
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-2">✓</span>
+                            CRM + Secretária de Agendamentos
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-2">✓</span>
+                            Scanner de Mercado
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-2">✓</span>
+                            Primeira bateria de anúncios
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white p-6 rounded-2xl shadow-lg border-t-4 border-purple-500 card-hover">
+                    <h4 class="text-lg font-semibold mb-4 text-purple-600">Sprint 2 (Semanas 3-4)</h4>
+                    <ul class="space-y-2 text-gray-600">
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-2">✓</span>
+                            Zelador do CRM
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-2">✓</span>
+                            Novos testes
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-2">✓</span>
+                            Dashboard V0
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-2">✓</span>
+                            6 posts publicados
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white p-6 rounded-2xl shadow-lg border-t-4 border-green-500 card-hover">
+                    <h4 class="text-lg font-semibold mb-4 text-green-600">Sprint 3 (Semanas 5-6)</h4>
+                    <ul class="space-y-2 text-gray-600">
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-2">✓</span>
+                            Analista de Tráfego
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-2">✓</span>
+                            Otimizações por CPA
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-2">✓</span>
+                            6 posts + ajustes
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-2">✓</span>
+                            Performance review
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white p-6 rounded-2xl shadow-lg border-t-4 border-red-500 card-hover">
+                    <h4 class="text-lg font-semibold mb-4 text-red-600">Sprint 4 (Semanas 7-8)</h4>
+                    <ul class="space-y-2 text-gray-600">
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-2">✓</span>
+                            Alimentador de BI
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-2">✓</span>
+                            Mini-case
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-2">✓</span>
+                            Repriorização 80/20
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-2">✓</span>
+                            Preparação escala
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 7: Investimento -->
+    <div class="slide relative z-10 min-h-screen gradient-bg text-white py-20">
+        <div class="max-w-7xl mx-auto px-8">
+            <h2 class="text-5xl font-bold text-center mb-16">
+                Investimento e Condições
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div class="glass-effect p-8 rounded-2xl">
+                    <h3 class="text-3xl font-bold mb-6">💰 Investimento</h3>
+                    <div class="text-6xl font-black mb-6">R$ 3.000/mês</div>
+                    <ul class="space-y-3 text-lg">
+                        <li class="flex items-center">
+                            <span class="text-yellow-300 mr-3">✓</span>
+                            Mínimo 3 meses
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-yellow-300 mr-3">✓</span>
+                            Sem taxa de setup
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-yellow-300 mr-3">✓</span>
+                            Revisão após 90 dias
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="glass-effect p-8 rounded-2xl">
+                    <h3 class="text-3xl font-bold mb-6">🔧 Premissas</h3>
+                    <ul class="space-y-3 text-lg">
+                        <li class="flex items-center">
+                            <span class="text-yellow-300 mr-3">✓</span>
+                            Acessos: Meta/Google/WhatsApp/CRM
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-yellow-300 mr-3">✓</span>
+                            Aprovação peças: 48h úteis
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-yellow-300 mr-3">✓</span>
+                            Orçamento mídia: Kabatec
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-yellow-300 mr-3">✓</span>
+                            APIs/servidores: Kabatec
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 8: Próximos Passos -->
+    <div class="slide relative z-10 min-h-screen bg-white py-20">
+        <div class="max-w-7xl mx-auto px-8">
+            <h2 class="text-5xl font-bold text-center mb-16 text-gray-800">
+                Próximos Passos
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                <div class="bg-gradient-to-br from-blue-500 to-purple-600 text-white p-8 rounded-2xl text-center card-hover">
+                    <div class="text-4xl mb-4">1️⃣</div>
+                    <h4 class="text-xl font-semibold mb-4">Aprovação</h4>
+                    <p>Confirmação do escopo e investimento</p>
+                </div>
+                
+                <div class="bg-gradient-to-br from-purple-500 to-pink-600 text-white p-8 rounded-2xl text-center card-hover">
+                    <div class="text-4xl mb-4">2️⃣</div>
+                    <h4 class="text-xl font-semibold mb-4">Acessos</h4>
+                    <p>Configuração de contas e permissões</p>
+                </div>
+                
+                <div class="bg-gradient-to-br from-green-500 to-blue-600 text-white p-8 rounded-2xl text-center card-hover">
+                    <div class="text-4xl mb-4">3️⃣</div>
+                    <h4 class="text-xl font-semibold mb-4">Kickoff</h4>
+                    <p>Início do projeto e primeira sprint</p>
+                </div>
+            </div>
+            
+            <div class="bg-gray-100 p-8 rounded-2xl">
+                <h4 class="text-2xl font-bold mb-4 text-gray-800">🚀 O que não está incluso (pode ser adicionado depois)</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <ul class="space-y-2 text-gray-600">
+                        <li class="flex items-center">
+                            <span class="text-red-500 mr-2">•</span>
+                            Site completo além da LP
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-red-500 mr-2">•</span>
+                            Produções audiovisuais avançadas
+                        </li>
+                    </ul>
+                    <ul class="space-y-2 text-gray-600">
+                        <li class="flex items-center">
+                            <span class="text-red-500 mr-2">•</span>
+                            Gestão de mídia em grande escala
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-red-500 mr-2">•</span>
+                            Agentes operacionais avançados
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <button class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-12 py-4 rounded-full text-xl font-bold hover:scale-105 transition-transform duration-300 shadow-lg">
+                    Iniciar Projeto
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Three.js Background
+        let scene, camera, renderer, particles;
+        
+        function initThree() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.getElementById('three-container').appendChild(renderer.domElement);
+            
+            // Create particles
+            const geometry = new THREE.BufferGeometry();
+            const vertices = [];
+            
+            for (let i = 0; i < 1000; i++) {
+                vertices.push(
+                    Math.random() * 2000 - 1000,
+                    Math.random() * 2000 - 1000,
+                    Math.random() * 2000 - 1000
+                );
+            }
+            
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+            
+            const material = new THREE.PointsMaterial({
+                color: 0x667eea,
+                size: 2,
+                transparent: true,
+                opacity: 0.6
+            });
+            
+            particles = new THREE.Points(geometry, material);
+            scene.add(particles);
+            
+            camera.position.z = 500;
+        }
+        
+        function animateThree() {
+            requestAnimationFrame(animateThree);
+            
+            particles.rotation.x += 0.001;
+            particles.rotation.y += 0.001;
+            
+            renderer.render(scene, camera);
+        }
+        
+        // Slide Navigation
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const navDots = document.querySelectorAll('.navigation-dot');
+        
+        function goToSlide(index) {
+            slides[currentSlide].classList.remove('active');
+            navDots[currentSlide].classList.remove('active');
+            
+            currentSlide = index;
+            
+            slides[currentSlide].classList.add('active');
+            navDots[currentSlide].classList.add('active');
+            
+            // Animate elements in current slide
+            animateSlideElements();
+        }
+        
+        function animateSlideElements() {
+            const currentSlideElement = slides[currentSlide];
+            const cards = currentSlideElement.querySelectorAll('.card-hover, .metric-card, .agent-card, .timeline-item');
+            
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(50px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        }
+        
+        function nextSlide() {
+            const next = (currentSlide + 1) % slides.length;
+            goToSlide(next);
+        }
+        
+        function prevSlide() {
+            const prev = (currentSlide - 1 + slides.length) % slides.length;
+            goToSlide(prev);
+        }
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+        
+        // Touch/swipe support
+        let startX = 0;
+        let endX = 0;
+        
+        document.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+        });
+        
+        document.addEventListener('touchend', (e) => {
+            endX = e.changedTouches[0].clientX;
+            handleSwipe();
+        });
+        
+        function handleSwipe() {
+            const threshold = 50;
+            const diff = startX - endX;
+            
+            if (Math.abs(diff) > threshold) {
+                if (diff > 0) {
+                    nextSlide();
+                } else {
+                    prevSlide();
+                }
+            }
+        }
+        
+        // Initialize
+        window.addEventListener('load', () => {
+            initThree();
+            animateThree();
+            animateSlideElements();
+        });
+        
+        // Resize handler
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+        
+        // GSAP Animations
+        gsap.registerPlugin(ScrollTrigger);
+        
+        // Animate cards on slide change
+        function animateSlideElements() {
+            const currentSlideElement = slides[currentSlide];
+            const cards = currentSlideElement.querySelectorAll('.card-hover, .metric-card, .agent-card');
+            
+            cards.forEach((card, index) => {
+                gsap.fromTo(card, 
+                    { 
+                        y: 50, 
+                        opacity: 0,
+                        scale: 0.9
+                    },
+                    { 
+                        y: 0, 
+                        opacity: 1,
+                        scale: 1,
+                        duration: 0.6,
+                        delay: index * 0.1,
+                        ease: "power2.out"
+                    }
+                );
+            });
+        }
+        
+        // Add hover effects
+        document.querySelectorAll('.card-hover').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                gsap.to(card, {
+                    y: -10,
+                    scale: 1.02,
+                    duration: 0.3,
+                    ease: "power2.out"
+                });
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                gsap.to(card, {
+                    y: 0,
+                    scale: 1,
+                    duration: 0.3,
+                    ease: "power2.out"
+                });
+            });
+        });
+    </script>
+</body>
+</html>

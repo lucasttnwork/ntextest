@@ -44,15 +44,9 @@ class AgnoConfig:
         # Configurações de modelo
         self.models = {
             "openai": {
-                "gpt-4": {
-                    "id": "gpt-4",
+                "gpt-5-mini": {
+                    "id": "gpt-5-mini",
                     "temperature": 0.7,
-                    "max_tokens": 2000,
-                    "api_key": os.getenv("OPENAI_API_KEY")
-                },
-                "gpt-5": {
-                    "id": "gpt-5",
-                    "temperature": 0.8,
                     "max_tokens": 4000,
                     "api_key": os.getenv("OPENAI_API_KEY")
                 }
@@ -117,10 +111,10 @@ class AgnoConfig:
         """Inicializa configuração fallback sem Agno"""
         self.models = {
             "openai": {
-                "gpt-4": {
-                    "id": "gpt-4",
+                "gpt-5-mini": {
+                    "id": "gpt-5-mini",
                     "temperature": 0.7,
-                    "max_tokens": 2000,
+                    "max_tokens": 4000,
                     "api_key": os.getenv("OPENAI_API_KEY")
                 }
             }
@@ -160,7 +154,7 @@ class AgnoConfig:
     def get_agno_agent_config(self, agent_type: str) -> Dict[str, Any]:
         """Obtém configuração específica para tipo de agente"""
         base_config = {
-            "model": self.models["openai"]["gpt-4"],
+            "model": self.models["openai"]["gpt-5-mini"],
             "tools": [],
             "instructions": "",
             "markdown": True

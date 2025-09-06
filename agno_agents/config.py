@@ -21,19 +21,19 @@ API_KEYS = {
 
 # Configurações dos modelos de IA
 AI_MODELS = {
-    "master": "gpt-5",  # Agente mestre usa GPT-5 para coordenação complexa
-    "copy": "gpt-5",    # Copy usa GPT-5 para criatividade e qualidade
-    "design": "gpt-5",  # Design usa GPT-5 para criatividade visual
-    "campaign": "gpt-5",     # Campanhas usam GPT-5 para estratégia
-    "analytics": "gpt-5",    # Analytics usa GPT-5 para análise complexa
-    "support": "gpt-4.1"     # Suporte usa GPT-4.1 para respostas simples
+    "master": "gpt-5-mini",  # Agente mestre usa GPT-5-mini para coordenação complexa
+    "copy": "gpt-5-mini",    # Copy usa GPT-5-mini para criatividade e qualidade
+    "design": "gpt-5-mini",  # Design usa GPT-5-mini para criatividade visual
+    "campaign": "gpt-5-mini",     # Campanhas usam GPT-5-mini para estratégia
+    "analytics": "gpt-5-mini",    # Analytics usa GPT-5-mini para análise complexa
+    "support": "gpt-5-mini"       # Suporte usa GPT-5-mini para respostas
 }
 
 # Configurações específicas para diferentes tipos de tarefas
 TASK_MODEL_MAPPING = {
-    # Tarefas complexas - sempre GPT-5
+    # Tarefas complexas - sempre GPT-5-mini
     "complex_tasks": {
-        "models": ["gpt-5", "gpt-5-think"],
+        "models": ["gpt-5-mini"],
         "use_cases": [
             "estratégia de campanha",
             "análise de dados complexa",
@@ -44,10 +44,10 @@ TASK_MODEL_MAPPING = {
             "tomada de decisão estratégica"
         ]
     },
-    
-    # Tarefas moderadas - GPT-5 ou GPT-5 Think
+
+    # Tarefas moderadas - GPT-5-mini
     "moderate_tasks": {
-        "models": ["gpt-5", "gpt-5-think"],
+        "models": ["gpt-5-mini"],
         "use_cases": [
             "criação de posts",
             "gestão de campanhas",
@@ -56,10 +56,10 @@ TASK_MODEL_MAPPING = {
             "otimização de anúncios"
         ]
     },
-    
-    # Tarefas simples - GPT-4.1
+
+    # Tarefas simples - GPT-5-mini
     "simple_tasks": {
-        "models": ["gpt-4.1"],
+        "models": ["gpt-5-mini"],
         "use_cases": [
             "respostas de suporte simples",
             "comentários de engajamento",
@@ -72,35 +72,35 @@ TASK_MODEL_MAPPING = {
 
 # Configurações de modelo por tipo de conteúdo
 CONTENT_MODEL_MAPPING = {
-    "instagram_post": "gpt-5",
-    "instagram_story": "gpt-5",
-    "instagram_reel": "gpt-5",
-    "ad_copy": "gpt-5",
-    "landing_page": "gpt-5",
-    "newsletter": "gpt-5",
-    "blog_post": "gpt-5",
-    "email_response": "gpt-4.1",
-    "comment_reply": "gpt-4.1",
-    "support_ticket": "gpt-4.1"
+    "instagram_post": "gpt-5-mini",
+    "instagram_story": "gpt-5-mini",
+    "instagram_reel": "gpt-5-mini",
+    "ad_copy": "gpt-5-mini",
+    "landing_page": "gpt-5-mini",
+    "newsletter": "gpt-5-mini",
+    "blog_post": "gpt-5-mini",
+    "email_response": "gpt-5-mini",
+    "comment_reply": "gpt-5-mini",
+    "support_ticket": "gpt-5-mini"
 }
 
 # Configurações de modelo por tipo de campanha
 CAMPAIGN_MODEL_MAPPING = {
-    "strategy_planning": "gpt-5",
-    "audience_targeting": "gpt-5",
-    "creative_brief": "gpt-5",
-    "budget_optimization": "gpt-5",
-    "performance_analysis": "gpt-5",
-    "a_b_testing": "gpt-5",
-    "campaign_setup": "gpt-4.1",
-    "basic_reporting": "gpt-4.1"
+    "strategy_planning": "gpt-5-mini",
+    "audience_targeting": "gpt-5-mini",
+    "creative_brief": "gpt-5-mini",
+    "budget_optimization": "gpt-5-mini",
+    "performance_analysis": "gpt-5-mini",
+    "a_b_testing": "gpt-5-mini",
+    "campaign_setup": "gpt-5-mini",
+    "basic_reporting": "gpt-5-mini"
 }
 
 # Configurações de modelo por tipo de tarefa
 TASK_MODEL_MAPPING = {
-    # Tarefas complexas - sempre GPT-5
+    # Tarefas complexas - sempre GPT-5-mini
     "complex_tasks": {
-        "models": ["gpt-5", "gpt-5-think"],
+        "models": ["gpt-5-mini"],
         "use_cases": [
             "estratégia de campanha",
             "análise de dados complexa",
@@ -111,10 +111,10 @@ TASK_MODEL_MAPPING = {
             "tomada de decisão estratégica"
         ]
     },
-    
-    # Tarefas moderadas - GPT-5 ou GPT-5 Think
+
+    # Tarefas moderadas - GPT-5-mini
     "moderate_tasks": {
-        "models": ["gpt-5", "gpt-5-think"],
+        "models": ["gpt-5-mini"],
         "use_cases": [
             "criação de posts",
             "gestão de campanhas",
@@ -123,10 +123,10 @@ TASK_MODEL_MAPPING = {
             "otimização de anúncios"
         ]
     },
-    
-    # Tarefas simples - GPT-4.1
+
+    # Tarefas simples - GPT-5-mini
     "simple_tasks": {
-        "models": ["gpt-4.1"],
+        "models": ["gpt-5-mini"],
         "use_cases": [
             "respostas de suporte simples",
             "comentários de engajamento",

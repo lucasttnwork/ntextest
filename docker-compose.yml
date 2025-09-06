@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: ntex_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ntex_db
+      POSTGRES_USER: ntex_user
+      POSTGRES_PASSWORD: ntex_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - ntex_network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: ntex_pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@ntex.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "8080:80"
+    depends_on:
+      - postgres
+    networks:
+      - ntex_network
+
+volumes:
+  postgres_data:
+
+networks:
+  ntex_network:
+    driver: bridge

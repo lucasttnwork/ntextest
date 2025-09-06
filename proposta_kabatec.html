@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NTEX → Kabatec | Piloto Academias</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: #f8fafc;
+        }
+
+        .slide {
+            min-height: 100vh;
+            padding: 4rem 6rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide:nth-child(odd) {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .slide:nth-child(even) {
+            background: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            line-height: 1.3;
+        }
+
+        h3 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+
+        .subtitle {
+            font-size: 1.4rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+        }
+
+        .card h4 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+
+        .card ul {
+            list-style: none;
+        }
+
+        .card li {
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .card li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .metric {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            margin: 1rem 0;
+        }
+
+        .metric-number {
+            font-size: 3rem;
+            font-weight: 800;
+            display: block;
+        }
+
+        .metric-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .timeline {
+            display: flex;
+            gap: 2rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .timeline-item {
+            flex: 1;
+            min-width: 250px;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-top: 4px solid #667eea;
+        }
+
+        .timeline-item h4 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .agent-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+        }
+
+        .agent-name {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .price-tag {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: inline-block;
+            margin: 1rem 0;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 2rem;
+            transition: transform 0.2s;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .navigation {
+            position: fixed;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+        }
+
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(102, 126, 234, 0.3);
+            margin: 0.5rem 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-dot.active {
+            background: #667eea;
+            transform: scale(1.2);
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 2rem;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            h2 {
+                font-size: 2rem;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .timeline {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navigation">
+        <div class="nav-dot active" onclick="goToSlide(0)"></div>
+        <div class="nav-dot" onclick="goToSlide(1)"></div>
+        <div class="nav-dot" onclick="goToSlide(2)"></div>
+        <div class="nav-dot" onclick="goToSlide(3)"></div>
+        <div class="nav-dot" onclick="goToSlide(4)"></div>
+        <div class="nav-dot" onclick="goToSlide(5)"></div>
+        <div class="nav-dot" onclick="goToSlide(6)"></div>
+        <div class="nav-dot" onclick="goToSlide(7)"></div>
+        <div class="nav-dot" onclick="goToSlide(8)"></div>
+        <div class="nav-dot" onclick="goToSlide(9)"></div>
+        <div class="nav-dot" onclick="goToSlide(10)"></div>
+    </div>
+
+    <!-- Slide 1: Capa -->
+    <div class="slide">
+        <div class="container">
+            <h1>NTEX → Kabatec</h1>
+            <h2>Piloto Academias</h2>
+            <div class="price-tag">R$ 3.000/mês</div>
+            <p class="subtitle">90 dias para gerar demanda qualificada e orquestrar CRM com IA</p>
+        </div>
+    </div>
+
+    <!-- Slide 2: Objetivo -->
+    <div class="slide">
+        <div class="container">
+            <h2>Objetivo do Piloto</h2>
+            <div class="grid">
+                <div class="card">
+                    <h4>🎯 Demanda Qualificada</h4>
+                    <ul>
+                        <li>Gerar 30-60 leads/mês de academias</li>
+                        <li>Foco em decisores com poder de compra</li>
+                        <li>Qualificação automática por critérios</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>⚡ CRM Inteligente</h4>
+                    <ul>
+                        <li>Orquestrar follow-ups automáticos</li>
+                        <li>Reduzir perdas no funil de vendas</li>
+                        <li>Agendamento automático de visitas</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>📊 Testes Rápidos</h4>
+                    <ul>
+                        <li>Matriz de testes semanais</li>
+                        <li>BI próprio para decisões</li>
+                        <li>Otimização contínua por dados</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>🤖 Agentes V0</h4>
+                    <ul>
+                        <li>Arquitetura de agentes em português</li>
+                        <li>Criação gradual por prioridade 80/20</li>
+                        <li>Automação de tarefas repetitivas</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 3: Escopo -->
+    <div class="slide">
+        <div class="container">
+            <h2>O que Entregamos</h2>
+            <div class="grid">
+                <div class="card">
+                    <h4>📱 Gestão de Mídia Paga</h4>
+                    <ul>
+                        <li>Meta (Feeds/Reels) + Google (Search/Maps)</li>
+                        <li>Matriz de testes contínuos</li>
+                        <li>Gatilhos: dor, prova, prazo, case</li>
+                        <li>Ciclos curtos: 7-10 dias</li>
+                        <li>Rastreamento completo</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>📝 Conteúdo & Posicionamento</h4>
+                    <ul>
+                        <li>Scanner de mercado (D+7)</li>
+                        <li>Mapa de mensagem estruturado</li>
+                        <li>12 posts/mês (8 IG + 4 LinkedIn)</li>
+                        <li>Ciclo de melhoria contínua</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>🔄 CRM & Operação</h4>
+                    <ul>
+                        <li>Funil completo de vendas</li>
+                        <li>Follow-ups automáticos</li>
+                        <li>Formulário de qualificação</li>
+                        <li>Playbook de atendimento</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>📈 BI & Relatórios</h4>
+                    <ul>
+                        <li>Dashboard V0 personalizado</li>
+                        <li>Relatório semanal (1 página)</li>
+                        <li>Métricas: Leads, CPL, conversão</li>
+                        <li>Forecast de vendas</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 4: Mídia Paga -->
+    <div class="slide">
+        <div class="container">
+            <h2>Gestão de Mídia Paga</h2>
+            <div class="grid">
+                <div class="card">
+                    <h4>🎯 Estratégia de Testes</h4>
+                    <ul>
+                        <li>4 variações por campanha</li>
+                        <li>Testes semanais de criativo</li>
+                        <li>Segmentação por comportamento</li>
+                        <li>Otimização por CPA</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>📊 Gatilhos de Conversão</h4>
+                    <ul>
+                        <li>Dor: calor/ruído excessivo</li>
+                        <li>Prova: antes/depois dB/BTU</li>
+                        <li>Prazo: D+60 para instalação</li>
+                        <li>Case: resultados comprovados</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>⚡ Ciclos de Otimização</h4>
+                    <ul>
+                        <li>Liga → Mede → Mata → Duplica</li>
+                        <li>7-10 dias por ciclo</li>
+                        <li>Redistribuição automática</li>
+                        <li>Exclusões negativas</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>🔍 Rastreamento</h4>
+                    <ul>
+                        <li>Pixel + GA4 + UTMs</li>
+                        <li>Eventos: WhatsApp, formulário</li>
+                        <li>Conversões por canal</li>
+                        <li>ROAS em tempo real</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 5: Conteúdo -->
+    <div class="slide">
+        <div class="container">
+            <h2>Conteúdo Orientado a Dados</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h4>D+7: Scanner de Mercado</h4>
+                    <p>Mapa de concorrentes, benchmarks de anúncios, ofertas e mensagens</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>D+14: Mapa de Mensagem</h4>
+                    <p>Dores → Promessas → Provas → Garantias (foco academias)</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>D+21: Calendário Mensal</h4>
+                    <p>8 posts IG + 4 posts LinkedIn (arte + copy + agendamento)</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>Contínuo: Melhoria</h4>
+                    <p>Cada post gera insight que volta para o próximo mês</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 6: CRM -->
+    <div class="slide">
+        <div class="container">
+            <h2>Fluxo CRM + Follow-ups</h2>
+            <div class="grid">
+                <div class="card">
+                    <h4>🔄 Funil de Vendas</h4>
+                    <ul>
+                        <li>Novo → Qualificado → Visita</li>
+                        <li>Visita → Proposta → Fechado</li>
+                        <li>Conversão: ≥40% Qualificado→Visita</li>
+                        <li>Conversão: ≥50% Visita→Proposta</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>🤖 Automação</h4>
+                    <ul>
+                        <li>Follow-ups automáticos</li>
+                        <li>E-mail + WhatsApp</li>
+                        <li>Tempo resposta: <4h úteis</li>
+                        <li>Qualificação automática</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>📋 Formulário</h4>
+                    <ul>
+                        <li>Metragem do espaço</li>
+                        <li>Pé-direito</li>
+                        <li>Prazo de instalação</li>
+                        <li>Dor principal</li>
+                        <li>Faixa de orçamento</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>📊 Métricas</h4>
+                    <ul>
+                        <li>Leads/mês: 30-60</li>
+                        <li>CPL: redução progressiva</li>
+                        <li>Taxa por etapa</li>
+                        <li>Forecast de vendas</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 7: BI -->
+    <div class="slide">
+        <div class="container">
+            <h2>BI & Dashboard V0</h2>
+            <div class="grid">
+                <div class="metric">
+                    <span class="metric-number">30-60</span>
+                    <span class="metric-label">Leads/mês</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-number">40%</span>
+                    <span class="metric-label">Qualificado→Visita</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-number">50%</span>
+                    <span class="metric-label">Visita→Proposta</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-number"><4h</span>
+                    <span class="metric-label">Tempo resposta</span>
+                </div>
+            </div>
+            <div class="card">
+                <h4>📊 Relatório Semanal (1 página)</h4>
+                <ul>
+                    <li>Decisões tomadas na semana</li>
+                    <li>Próximos testes agendados</li>
+                    <li>Performance por canal</li>
+                    <li>ROI e projeções</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 8: Agentes -->
+    <div class="slide">
+        <div class="container">
+            <h2>Agentes de IA V0</h2>
+            <div class="agent-grid">
+                <div class="agent-card">
+                    <div class="agent-name">Secretária de Agendamentos</div>
+                    <p>Captura leads, faz perguntas-chave e agenda visitas. Integra WhatsApp/CRM.</p>
+                </div>
+                <div class="agent-card">
+                    <div class="agent-name">Zelador do CRM</div>
+                    <p>Mantém estágios atualizados, cria tarefas de follow-up e alerta inatividade.</p>
+                </div>
+                <div class="agent-card">
+                    <div class="agent-name">Analista de Tráfego</div>
+                    <p>Lê dados de anúncios em tempo real, sugere novos testes e redistribuição de verba.</p>
+                </div>
+                <div class="agent-card">
+                    <div class="agent-name">Alimentador de BI</div>
+                    <p>Consolida dados (ads/CRM/LP) no dashboard e gera resumo semanal.</p>
+                </div>
+            </div>
+            <div class="card">
+                <h4>📈 Regra 80/20</h4>
+                <p>Após resultados do piloto, priorizamos novos agentes V1 apenas se provarem maior impacto: Orçamentista Digital, PMO de Obra, Fiscal de Documentos/ART.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 9: Roadmap -->
+    <div class="slide">
+        <div class="container">
+            <h2>Roadmap 90 Dias</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h4>Sprint 1 (Semanas 1-2)</h4>
+                    <ul>
+                        <li>LP no ar + rastreamento</li>
+                        <li>CRM + Secretária de Agendamentos</li>
+                        <li>Scanner de Mercado</li>
+                        <li>Primeira bateria de anúncios</li>
+                    </ul>
+                </div>
+                <div class="timeline-item">
+                    <h4>Sprint 2 (Semanas 3-4)</h4>
+                    <ul>
+                        <li>Zelador do CRM</li>
+                        <li>Novos testes</li>
+                        <li>Dashboard V0</li>
+                        <li>6 posts publicados</li>
+                    </ul>
+                </div>
+                <div class="timeline-item">
+                    <h4>Sprint 3 (Semanas 5-6)</h4>
+                    <ul>
+                        <li>Analista de Tráfego</li>
+                        <li>Otimizações por CPA</li>
+                        <li>6 posts + ajustes</li>
+                        <li>Performance review</li>
+                    </ul>
+                </div>
+                <div class="timeline-item">
+                    <h4>Sprint 4 (Semanas 7-8)</h4>
+                    <ul>
+                        <li>Alimentador de BI</li>
+                        <li>Mini-case</li>
+                        <li>Repriorização 80/20</li>
+                        <li>Preparação escala</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 10: KPIs e Investimento -->
+    <div class="slide">
+        <div class="container">
+            <h2>KPIs e Investimento</h2>
+            <div class="grid">
+                <div class="card">
+                    <h4>🎯 Métrica-Norte</h4>
+                    <p>Número de visitas qualificadas com decisor de academia</p>
+                </div>
+                <div class="card">
+                    <h4>💰 Investimento</h4>
+                    <div class="price-tag">R$ 3.000/mês</div>
+                    <ul>
+                        <li>Mínimo 3 meses</li>
+                        <li>Sem taxa de setup</li>
+                        <li>Revisão após 90 dias</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>📊 KPIs Principais</h4>
+                    <ul>
+                        <li>Leads: 30-60/mês</li>
+                        <li>CPL: redução progressiva</li>
+                        <li>Conversão: ≥40% → ≥50%</li>
+                        <li>Tempo resposta: <4h</li>
+                        <li>Publicações: 12/mês</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>🔧 Premissas</h4>
+                    <ul>
+                        <li>Acessos: Meta/Google/WhatsApp/CRM</li>
+                        <li>Aprovação peças: 48h úteis</li>
+                        <li>Orçamento mídia: Kabatec</li>
+                        <li>APIs/servidores: Kabatec</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 11: Próximos Passos -->
+    <div class="slide">
+        <div class="container">
+            <h2>Próximos Passos</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h4>1. Aprovação</h4>
+                    <p>Confirmação do escopo e investimento</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>2. Acessos</h4>
+                    <p>Configuração de contas e permissões</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>3. Kickoff</h4>
+                    <p>Início do projeto e primeira sprint</p>
+                </div>
+            </div>
+            <div class="card">
+                <h4>🚀 O que não está incluso (pode ser adicionado depois)</h4>
+                <ul>
+                    <li>Site completo além da LP</li>
+                    <li>Produções audiovisuais avançadas</li>
+                    <li>Gestão de mídia em grande escala</li>
+                    <li>Agentes operacionais avançados</li>
+                </ul>
+            </div>
+            <a href="#" class="cta-button">Iniciar Projeto</a>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const navDots = document.querySelectorAll('.nav-dot');
+
+        function goToSlide(index) {
+            slides[currentSlide].style.display = 'none';
+            navDots[currentSlide].classList.remove('active');
+            
+            currentSlide = index;
+            
+            slides[currentSlide].style.display = 'flex';
+            navDots[currentSlide].classList.add('active');
+        }
+
+        function nextSlide() {
+            const next = (currentSlide + 1) % slides.length;
+            goToSlide(next);
+        }
+
+        function prevSlide() {
+            const prev = (currentSlide - 1 + slides.length) % slides.length;
+            goToSlide(prev);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+
+        // Touch/swipe support
+        let startX = 0;
+        let endX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            endX = e.changedTouches[0].clientX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const threshold = 50;
+            const diff = startX - endX;
+            
+            if (Math.abs(diff) > threshold) {
+                if (diff > 0) {
+                    nextSlide();
+                } else {
+                    prevSlide();
+                }
+            }
+        }
+
+        // Initialize
+        slides.forEach((slide, index) => {
+            if (index !== 0) {
+                slide.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

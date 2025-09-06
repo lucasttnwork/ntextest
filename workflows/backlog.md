@@ -111,6 +111,26 @@
 - [ ] **Escalabilidade** - Arquitetura para crescimento
 - [x] **Documentação técnica** - Manuais de operação ✅
 
+### **Correções Recentes e Otimizações**
+
+#### **Framework Agno - Status ✅**
+- [x] **Atualização para versão 1.8.1** - Framework atualizado e funcionando
+- [x] **Correção de imports** - Simplificação para compatibilidade
+- [x] **Integração Master Agent** - Agno funcionando no agente mestre
+- [x] **Fallback implementado** - Sistema robusto com backup
+
+#### **Agente Gary Bencivenga - Status ✅**
+- [x] **Integração completa** - Agente Gary funcionando via @gary
+- [x] **Carregamento de prompt** - Path corrigido para prompts/Gary_Bencivenga_Agent.md
+- [x] **Roteamento inteligente** - Gatilho @gary funcionando corretamente
+- [x] **Testes validados** - Funcionalidade testada e aprovada
+
+#### **Correções Técnicas - Status ✅**
+- [x] **Imports dos agentes** - Funções get_copy_agent e get_design_agent adicionadas
+- [x] **Path do prompt Gary** - Correção do caminho relativo
+- [x] **Backend robusto** - Sistema funcionando sem erros
+- [x] **Testes de integração** - Todos os agentes testados com sucesso
+
 ## **Sistema de Memória - Status ✅**
 
 ### **Banco de Dados Supabase**
