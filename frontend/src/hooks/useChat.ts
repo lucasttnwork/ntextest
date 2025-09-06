@@ -52,6 +52,8 @@ export function useChat(sessionId?: string) {
           for await (const evt of ntexApi.streamMessage(message, currentSessionId, options?.webSearch)) {
             if (evt.type === 'delta' && typeof evt.content === 'string') {
               setMessages(prev => prev.map(m => m.id === baseId ? { ...m, content: (m.content || '') + evt.content } : m));
+            } else if (evt.type === 'sources' && evt.sources && Array.isArray(evt.sources)) {
+              setMessages(prev => prev.map(m => m.id === baseId ? { ...m, sources: evt.sources } : m));
             } else if (evt.type === 'complete') {
               break;
             } else if (evt.type === 'error') {

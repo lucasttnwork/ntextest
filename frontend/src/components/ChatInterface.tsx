@@ -53,11 +53,18 @@ export function ChatInterface({ sessionId, onSessionChange }: ChatInterfaceProps
     const message = inputValue.trim();
     setInputValue('');
 
-    await sendMessage(message);
+    await sendMessage(message, { stream: true });
 
     // Notify parent component of session change
     if (currentSessionId && onSessionChange) {
       onSessionChange(currentSessionId);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.ctrlKey && e.key === 'Enter') {
+      e.preventDefault();
+      handleSubmit(e);
     }
   };
 
@@ -146,6 +153,9 @@ export function ChatInterface({ sessionId, onSessionChange }: ChatInterfaceProps
                           {line}
                         </p>
                       ))}
+                      {isLoading && message.role === 'assistant' && message.id === messages[messages.length - 1]?.id && (
+                        <span className="inline-block w-2 h-4 bg-primary animate-pulse ml-1" />
+                      )}
                     </div>
                     {message.agent && (
                       <div className="mt-2 text-xs text-muted-foreground">
@@ -198,7 +208,8 @@ export function ChatInterface({ sessionId, onSessionChange }: ChatInterfaceProps
           <PromptInputTextarea
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Digite sua mensagem para Gary..."
+            onKeyDown={handleKeyDown}
+            placeholder="Digite sua mensagem para Gary... (Ctrl+Enter para enviar)"
             disabled={isLoading}
             className="min-h-[48px] max-h-[120px]"
           />

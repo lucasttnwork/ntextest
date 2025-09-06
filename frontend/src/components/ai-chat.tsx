@@ -137,7 +137,7 @@ const ChatBotDemo = () => {
                   <Sources className="mt-2">
                     <SourcesTrigger count={message.sources.length} />
                     <SourcesContent>
-                      {message.sources.map((s: any, idx: number) => (
+                      {message.sources.map((s, idx: number) => (
                         <Source key={idx} href={s.url} title={s.title}>
                           {s.description || s.url}
                         </Source>

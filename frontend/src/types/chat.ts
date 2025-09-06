@@ -1,9 +1,16 @@
+export interface Source {
+  title: string;
+  url: string;
+  description: string;
+}
+
 export interface ChatMessage {
   id: number;
   role: 'user' | 'assistant';
   content: string;
   timestamp: string;
   agent?: string;
+  sources?: Source[];
   metadata?: Record<string, unknown>;
 }
 
