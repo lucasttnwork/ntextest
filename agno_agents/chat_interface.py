@@ -6,6 +6,7 @@ Interface simples usando framework Agno com PostgreSQL local
 import os
 import json
 import logging
+import requests
 from datetime import datetime
 from typing import Dict, List, Any
 from pathlib import Path
@@ -38,6 +39,39 @@ try:
 except Exception as e:
     logger.error(f"Erro ao inicializar PostgreSQL: {e}")
     postgres_client = None
+
+# Função para fetch seguro de metadados das sources
+def fetch_source_metadata(url: str) -> Dict[str, str]:
+    """Busca metadados de uma URL com timeout seguro"""
+    try:
+        headers = {
+            'User-Agent': 'NTEX-Agent/1.0 (https://ntex.com.br)',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Language': 'pt-BR,pt;q=0.8,en-US;q=0.5,en;q=0.3',
+        }
+
+        response = requests.get(url, headers=headers, timeout=3, allow_redirects=True)
+        response.raise_for_status()
+
+        # Extrair título da página HTML
+        import re
+        title_match = re.search(r'<title[^>]*>([^<]+)</title>', response.text, re.IGNORECASE)
+        title = title_match.group(1).strip() if title_match else url
+
+        # Extrair descrição meta
+        desc_match = re.search(r'<meta[^>]*name=["\']description["\'][^>]*content=["\']([^"\']+)["\']', response.text, re.IGNORECASE)
+        description = desc_match.group(1).strip() if desc_match else ""
+
+        return {
+            'title': title,
+            'description': description
+        }
+    except Exception as e:
+        logger.warning(f"Erro ao buscar metadados de {url}: {e}")
+        return {
+            'title': url,
+            'description': ''
+        }
 
 # Função auxiliar para processar com Gary Agent
 def process_with_gary_agent(message: str) -> Dict[str, Any]:
@@ -280,9 +314,22 @@ def chat_stream():
         if not message:
             return jsonify({"error": "Mensagem vazia"}), 400
 
-        # Sessão local (evita dependências externas)
+        # Criar sessão (DB se disponível, senão local)
         if not session_id:
-            session_id = f"local_session_{datetime.now().timestamp()}"
+            session_name = f"Streaming: {message[:50]}..."
+            if postgres_client:
+                try:
+                    session_result = postgres_client.create_chat_session(session_name)
+                    if session_result.get("success") and session_result.get("session_id"):
+                        session_id = session_result["session_id"]
+                    else:
+                        logger.warning("Não foi possível criar sessão no Postgres, usando sessão local")
+                        session_id = f"local_session_{datetime.now().timestamp()}"
+                except Exception as e:
+                    logger.error(f"Erro ao criar sessão no Postgres: {e}")
+                    session_id = f"local_session_{datetime.now().timestamp()}"
+            else:
+                session_id = f"local_session_{datetime.now().timestamp()}"
 
         if session_id not in active_sessions:
             active_sessions[session_id] = ChatSession(session_id)
@@ -302,29 +349,36 @@ def chat_stream():
                 result = process_with_gary_agent(prompt)
                 text = result.get("response", "")
 
+                # Salvar resposta do assistente no DB se for sessão válida
+                if result.get("success") and not str(session_id).startswith("local_session_"):
+                    try:
+                        postgres_client.add_message(
+                            session_id=session_id,
+                            role="assistant",
+                            content=text,
+                            agent_name=result.get("agent", "Gary_Bencivenga_Agent")
+                        )
+                    except Exception as e:
+                        logger.error(f"Erro ao salvar resposta do assistente: {e}")
+
                 # Stream de deltas simples
                 chunk_size = 35
                 for i in range(0, len(text), chunk_size):
                     delta = text[i:i+chunk_size]
                     yield f"data: {json.dumps({'type': 'delta', 'content': delta})}\n\n"
 
-                # Extrair URLs simples do texto para popular Sources
+                # Extrair URLs e buscar metadados para popular Sources
                 import re
                 url_pattern = r"https?://[\w\-\.\/:?#=,&%+~]+"
                 urls = re.findall(url_pattern, text)
                 sources = []
                 for u in urls:
+                    metadata = fetch_source_metadata(u)
                     sources.append({
-                        'title': u,
+                        'title': metadata['title'],
                         'url': u,
-                        'description': ''
+                        'description': metadata['description']
                     })
-
-                # Stream de deltas simples
-                chunk_size = 35
-                for i in range(0, len(text), chunk_size):
-                    delta = text[i:i+chunk_size]
-                    yield f"data: {json.dumps({'type': 'delta', 'content': delta})}\n\n"
 
                 # Enviar fontes encontradas (se houver)
                 if sources:
