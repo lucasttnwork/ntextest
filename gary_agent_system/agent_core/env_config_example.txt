@@ -1,0 +1,52 @@
+# Configurações de API Keys para o Sistema de Agentes IA NTEX
+# Copie este arquivo para .env e preencha com suas chaves reais
+
+# OpenAI API (GPT-5 e GPT-4.1)
+OPENAI_API_KEY=sua_chave_openai_aqui
+
+# Anthropic API (Claude - opcional)
+ANTHROPIC_API_KEY=sua_chave_anthropic_aqui
+
+# Meta Business API (Instagram)
+META_ACCESS_TOKEN=seu_token_meta_aqui
+META_APP_ID=seu_app_id_meta
+META_APP_SECRET=seu_app_secret_meta
+
+# Google Ads API
+GOOGLE_ADS_API_KEY=sua_chave_google_ads_aqui
+GOOGLE_ADS_CLIENT_ID=seu_client_id_google_ads
+GOOGLE_ADS_CLIENT_SECRET=seu_client_secret_google_ads
+GOOGLE_ADS_DEVELOPER_TOKEN=seu_developer_token_google_ads
+
+# Google Analytics 4
+GOOGLE_ANALYTICS_KEY=sua_chave_ga4_aqui
+GOOGLE_ANALYTICS_PROPERTY_ID=seu_property_id_ga4
+
+# Supabase (Banco de dados)
+SUPABASE_URL=sua_url_supabase_aqui
+SUPABASE_ANON_KEY=sua_chave_anon_supabase_aqui
+SUPABASE_SERVICE_ROLE_KEY=sua_chave_service_role_supabase_aqui
+
+# Zapier/Make (Automações)
+ZAPIER_WEBHOOK_URL=sua_url_webhook_zapier_aqui
+MAKE_WEBHOOK_URL=sua_url_webhook_make_aqui
+
+# Configurações do Sistema
+NTEX_ENVIRONMENT=development  # development, staging, production
+NTEX_LOG_LEVEL=INFO  # DEBUG, INFO, WARNING, ERROR
+NTEX_DEBUG_MODE=true  # true, false
+
+# Configurações de Performance
+NTEX_MAX_CONCURRENT_TASKS=10
+NTEX_TASK_TIMEOUT=300  # segundos
+NTEX_API_RETRY_ATTEMPTS=3
+
+# Configurações de Segurança
+NTEX_ENCRYPTION_KEY=sua_chave_criptografia_aqui
+NTEX_JWT_SECRET=seu_secret_jwt_aqui
+
+# Configurações de Monitoramento
+NTEX_METRICS_ENABLED=true
+NTEX_ALERTS_ENABLED=true
+NTEX_SLACK_WEBHOOK_URL=sua_url_webhook_slack_aqui  # opcional
+NTEX_EMAIL_NOTIFICATIONS=sua_email_notificacoes_aqui  # opcional

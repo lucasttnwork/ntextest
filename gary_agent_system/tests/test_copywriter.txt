@@ -1,0 +1,14 @@
+# Testes do NTEX Copywriter Agent
+# Use: python3 scripts/copywriter_cli.py --file test_copywriter.txt
+
+social_post|Crie um post sobre como IA está democratizando o marketing para pequenas empresas. Inclua 1 caso real, 3 dicas práticas, CTA para call. Tom: inspirador mas direto.
+
+email|Crie email de vendas para serviço de automação de marketing (R$5k/mês). Estrutura: problema → agitação → solução → prova social → CTA. Inclua: caso com números, garantia, urgência. Público: empresários B2B.
+
+landing_page|Crie copy para landing page de e-book gratuito "10 Estratégias de Marketing com IA". Inclua: headline com benefício, bullet points, CTA. Objetivo: capturar email.
+
+ad_copy|Crie anúncio Google Ads para "agência de marketing automatizado". Headline: máx 30 caracteres, inclua "automação". Descrição: expanda benefícios, CTA claro.
+
+blog_post|Crie artigo "Como Automar 80% do Seu Marketing em 30 Dias". Estrutura: introdução → problema → solução passo a passo → conclusão → CTA. Inclua: 5 passos práticos, exemplos reais. Tamanho: 1000 palavras.
+
+sales_page|Crie copy para página de vendas de curso "Copywriting com IA" (R$497). Estrutura: headline → story → problema → solução → benefícios → prova social → garantia → CTA. Inclua: caso real, bônus, garantia 30 dias.

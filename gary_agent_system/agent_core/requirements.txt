@@ -1,0 +1,22 @@
+# Framework Agno - Sistema Básico
+agno>=1.8.0
+
+# OpenAI - Modelos de IA
+openai>=1.0.0
+
+# PostgreSQL - Banco de dados local
+psycopg2-binary>=2.9.0
+
+# Flask - Servidor web
+flask>=2.3.0
+flask-cors>=4.0.0
+
+# Variáveis de ambiente
+python-dotenv>=1.0.0
+
+# Logging e utilitários
+colorama>=0.4.6
+rich>=13.0.0
+
+# Validação de dados
+pydantic>=2.0.0
